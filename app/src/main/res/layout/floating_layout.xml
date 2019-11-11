@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <com.hyh.floatingviewapp.CircleImg
+        android:id="@+id/iv_logo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_launcher_background"
+        />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_logo"
+        android:background="#ffffff"
+        android:layout_marginTop="20dp"
+        >
+
+    <com.hyh.floatingviewapp.CustomRecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:background="@color/colorAccent"
+        />
+
+    </FrameLayout>
+</merge>
