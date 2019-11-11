@@ -48,7 +48,8 @@ public class CustomRecyclerView extends RecyclerView {
                 float absY = Math.abs(y - mInitMotionY);
                 if(!mTriggerMove) {
                     if (absX >= mTouchSlop || absY >= mTouchSlop) {
-                        if (absX > absY && absX / absY > 1.5f) {
+                        if ((absX > absY)||!canScrollVertically(-1)||!canScrollVertically(1)) {
+                            //横向滑动或不可以上下滑动时，把事件交给父控件拦截
                             Log.d("hyh", "CustomRecyclerView: dispatchTouchEvent: horizontal");
                             getParent().requestDisallowInterceptTouchEvent(false);
                         }
