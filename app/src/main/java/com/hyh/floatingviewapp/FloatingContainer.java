@@ -83,6 +83,7 @@ public class FloatingContainer extends RelativeLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d("hyh", "FloatingContainer: onInterceptTouchEvent: ");
         boolean intercept = false;
         int x = (int) ev.getRawX();
         int y = (int) ev.getRawY();

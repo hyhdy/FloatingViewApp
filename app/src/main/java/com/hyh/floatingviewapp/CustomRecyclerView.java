@@ -2,7 +2,9 @@ package com.hyh.floatingviewapp;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CustomRecyclerView extends RecyclerView {
     private float mInitMotionX;
     private float mInitMotionY;
+    private boolean mTriggerMove;
+    private int mTouchSlop;
 
     public CustomRecyclerView(@NonNull Context context) {
         this(context,null);
@@ -21,6 +25,8 @@ public class CustomRecyclerView extends RecyclerView {
 
     public CustomRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        //获得touchslop
+        mTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
     }
 
     @Override
@@ -30,6 +36,7 @@ public class CustomRecyclerView extends RecyclerView {
 
         switch (ev.getAction()){
             case MotionEvent.ACTION_DOWN:{
+                mTriggerMove = false;
                 mInitMotionX = x;
                 mInitMotionY = y;
                 getParent().requestDisallowInterceptTouchEvent(true);
@@ -39,8 +46,14 @@ public class CustomRecyclerView extends RecyclerView {
                 //处理横向冲突
                 float absX = Math.abs(x - mInitMotionX);
                 float absY = Math.abs(y - mInitMotionY);
-                if (absX > absY && absX / absY > 2) {
-                    getParent().requestDisallowInterceptTouchEvent(false);
+                if(!mTriggerMove) {
+                    if (absX >= mTouchSlop || absY >= mTouchSlop) {
+                        if (absX > absY && absX / absY > 1.5f) {
+                            Log.d("hyh", "CustomRecyclerView: dispatchTouchEvent: horizontal");
+                            getParent().requestDisallowInterceptTouchEvent(false);
+                        }
+                        mTriggerMove = true;
+                    }
                 }
             }
             break;
