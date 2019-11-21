@@ -62,16 +62,17 @@ public class FloatingButtonService extends Service {
 //        mBuilder.setContentTitle("这是标题");
 //        mBuilder.setContentText("这是内容");
 //        startForeground(FLAG_FOREGROUND, mBuilder.build());
-
-//        Intent activityIntent = new Intent(this, MainActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
-//        Notification notification = new Notification.Builder(this).setAutoCancel(true).
-//                setSmallIcon(R.drawable.ic_launcher_background).setTicker("前台Service启动")
-//                .setContentTitle("前台Service运行中").
-//                setContentText("这是一个正在运行的前台Service")
-//                .setWhen(System.currentTimeMillis()).
-//                setContentIntent(pendingIntent).build();
-//        startForeground(1, notification);
+        
+        Intent intent = new Intent(this, SecondActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
+        Notification notification = new NotificationCompat.Builder(this)
+                .setContentTitle("标题")
+                .setContentText("内容")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pi)
+                .build();
+        startForeground(FLAG_FOREGROUND, notification);
     }
 
     @Nullable
