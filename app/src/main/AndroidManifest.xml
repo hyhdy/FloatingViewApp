@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--targetSdkVersion = 28 (Android 9 / Pie) or above must declared the usage of the FOREGROUND_SERVICE permission-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"

@@ -1,8 +1,11 @@
 package com.hyh.floatingviewapp;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -19,6 +22,7 @@ import androidx.core.app.NotificationCompat;
 
 public class FloatingButtonService extends Service {
     public static final int FLAG_FOREGROUND = 1;
+    public static final String CHANNEL_ID ="com.hyh.floatingviewapp.hyh";
     private WindowManager mWindowManager;
     private Point mWindowSize;
     private WindowManager.LayoutParams mLayoutParams;
@@ -53,26 +57,45 @@ public class FloatingButtonService extends Service {
         mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        switchtToForeground();
+        setForeground();
     }
 
-    private void switchtToForeground(){
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-//        mBuilder.setSmallIcon(R.drawable.ic_launcher_background);
-//        mBuilder.setContentTitle("这是标题");
-//        mBuilder.setContentText("这是内容");
-//        startForeground(FLAG_FOREGROUND, mBuilder.build());
-        
+    /**
+     * 开启前台进程，这里需要做适配
+     */
+    private void setForeground(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            //设定的通知渠道名称
+            String channelName = "channel_floating";
+            //设置通知的重要程度
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            //构建通知渠道
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, importance);
+            channel.setDescription("none");
+            //向系统注册通知渠道，注册后不能改变重要性以及其他通知行为
+            NotificationManager notificationManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+            //在创建的通知渠道上发送通知
+            startForeground(FLAG_FOREGROUND,createNotification(CHANNEL_ID));
+        }else{
+            startForeground(FLAG_FOREGROUND, createNotification(CHANNEL_ID));
+        }
+    }
+
+    private Notification createNotification(String channelId){
+        String title = "标题";
+        String content = "内容";
+        int icon = R.drawable.ic_launcher_background;
+
         Intent intent = new Intent(this, SecondActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
-        Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle("标题")
-                .setContentText("内容")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+        builder.setSmallIcon(icon)//设置通知图标
+                .setContentTitle(title)//设置通知标题
+                .setContentText(content)//设置通知内容
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pi)
-                .build();
-        startForeground(FLAG_FOREGROUND, notification);
+                .setContentIntent(pi);
+        return builder.build();
     }
 
     @Nullable
