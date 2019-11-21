@@ -28,12 +28,14 @@ public class PermissionManager {
 
     private MediaProjectionManager mMediaProjectionManager;
     private MediaProjection mMediaProjection;
+    private PermissinCallBack mCallBack;
 
     private Activity mHost;
 
     @TargetApi(LOLLIPOP)
-    public PermissionManager(@NonNull Activity host) {
+    public PermissionManager(@NonNull Activity host,PermissinCallBack callBack) {
         mHost = host;
+        mCallBack = callBack;
         //android 5.0以上才支持
         mMediaProjectionManager = (MediaProjectionManager) host.getApplicationContext().getSystemService(MEDIA_PROJECTION_SERVICE);
     }
@@ -45,7 +47,9 @@ public class PermissionManager {
             if(checkFloatingPermission()){
                 //检查录屏权限
                 if(checkRecordPermission()){
-                    startWork(mMediaProjection);
+                    if(mCallBack!=null){
+                        mCallBack.onSuccess();
+                    }
                 }else{
                     //请求录屏权限
                     requestMediaProjection();
@@ -126,31 +130,6 @@ public class PermissionManager {
         }
     }
 
-    private void startWork(MediaProjection mediaProjection){
-        startCapturing(mediaProjection);
-        startFloating();
-    }
-
-    /**
-     * 开始录屏
-     * @param mediaProjection
-     */
-    private void startCapturing(MediaProjection mediaProjection) {
-        if (checkAudioPermissions()) {
-        } else {
-        }
-    }
-
-    /**
-     * 开始显示悬浮窗
-     */
-    private void startFloating(){
-        if (FloatingButtonService.isStarted) {
-            return;
-        }
-        mHost.startService(new Intent(mHost, FloatingButtonService.class));
-    }
-
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_AUDIO_PERMISSIONS) {
             int granted = PackageManager.PERMISSION_GRANTED;
@@ -160,7 +139,9 @@ public class PermissionManager {
             if (granted == PackageManager.PERMISSION_GRANTED) {
                 if(checkFloatingPermission()){
                     if (checkRecordPermission()) {
-                        startWork(mMediaProjection);
+                        if(mCallBack!=null){
+                            mCallBack.onSuccess();
+                        }
                     } else {
                         //请求录屏权限
                         requestMediaProjection();
@@ -180,7 +161,9 @@ public class PermissionManager {
         if (requestCode == REQUEST_FLOATING_PERMISSIONS) {
             if (FloatPermission.checkPermissionAbove6(mHost)) {
                 if(checkRecordPermission()){
-                    startWork(mMediaProjection);
+                    if(mCallBack!=null){
+                        mCallBack.onSuccess();
+                    }
                 }else{
                     //请求录屏权限
                     requestMediaProjection();
@@ -195,8 +178,13 @@ public class PermissionManager {
                 return;
             }
             mMediaProjection = mediaProjection;
-            startWork(mMediaProjection);
+            if(mCallBack!=null){
+                mCallBack.onSuccess();
+            }
         }
     }
 
+    public interface PermissinCallBack{
+        void onSuccess();
+    }
 }

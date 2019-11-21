@@ -18,14 +18,14 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.M;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PermissionManager.PermissinCallBack {
     private PermissionManager mPermissionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mPermissionManager = new PermissionManager(this);
+        mPermissionManager = new PermissionManager(this,this);
     }
 
     @Override
@@ -49,21 +49,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void startFloatingButtonService() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            //6以上机型需要动态授权悬浮窗权限
-//            if(!Settings.canDrawOverlays(this)){
-//                startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), REQUEST_FLOATING_PERMISSIONS);
-//            }else{
-//                startFloating();
-//            }
-//        }else {
-//            //6以下机型默认会授权悬浮窗权限，但有些rom会有问题，所以这里通过反射去判断是否已经授权
-//            if(FloatPermission.checkOp(this)){
-//                startFloating();
-//            }else{
-//                //未授权跳转到对应机型权限设置页面，需要适配不同机型
-//            }
-//        }
-//    }
+    public void stop(View view){
+        stopService(new Intent(this, FloatingButtonService.class));
+    }
+
+    public void skipNextActivity(View view){
+        Intent intent = new Intent(this,SecondActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSuccess() {
+        startService(new Intent(this, FloatingButtonService.class));
+    }
 }
