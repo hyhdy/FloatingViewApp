@@ -7,22 +7,27 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
+
+import com.hyh.floatingviewapp.floating.FloatingService;
 
 public class SecondActivity extends AppCompatActivity implements PermissionManager.PermissinCallBack {
     private PermissionManager mPermissionManager;
-    private FloatingButtonService mService;
+    private FloatingService mService;
+    private boolean mServiceConnected;
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            FloatingButtonService.MyBinder binder = (FloatingButtonService.MyBinder) service;
+            Log.d("hyh", "SecondActivity: onServiceConnected: connected");
+            FloatingService.MyBinder binder = (FloatingService.MyBinder) service;
             mService = binder.getService();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            Log.d("hyh", "SecondActivity: onServiceDisconnected: unconnected");
         }
     };
 
@@ -55,7 +60,7 @@ public class SecondActivity extends AppCompatActivity implements PermissionManag
     }
 
     public void stop(View view){
-        unbindService(mServiceConnection);
+       unbindService();
     }
 
     public void showFloating(View view){
@@ -72,13 +77,20 @@ public class SecondActivity extends AppCompatActivity implements PermissionManag
 
     @Override
     public void onSuccess() {
-        Intent intent = new Intent(this, FloatingButtonService.class);
-        bindService(intent,mServiceConnection,BIND_AUTO_CREATE);
+        Intent intent = new Intent(this, FloatingService.class);
+        mServiceConnected = bindService(intent,mServiceConnection,BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
+        unbindService();
+    }
+
+    private void unbindService(){
+        if(mServiceConnected) {
+            unbindService(mServiceConnection);
+            mServiceConnected = false;
+        }
     }
 }

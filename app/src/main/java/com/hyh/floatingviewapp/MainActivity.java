@@ -2,21 +2,11 @@ package com.hyh.floatingviewapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
-import android.widget.Toast;
 
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.os.Build.VERSION_CODES.M;
+import com.hyh.floatingviewapp.floating.FloatingService;
 
 public class MainActivity extends AppCompatActivity implements PermissionManager.PermissinCallBack {
     private PermissionManager mPermissionManager;
@@ -50,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
     }
 
     public void stop(View view){
-        stopService(new Intent(this, FloatingButtonService.class));
+        stopService(new Intent(this, FloatingService.class));
     }
 
     public void skipNextActivity(View view){
@@ -60,6 +50,6 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
 
     @Override
     public void onSuccess() {
-        startService(new Intent(this, FloatingButtonService.class));
+        startService(new Intent(this, FloatingService.class));
     }
 }

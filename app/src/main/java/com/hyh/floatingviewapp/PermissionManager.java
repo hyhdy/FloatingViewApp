@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.hyh.floatingviewapp.floating.FloatPermission;
+
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
