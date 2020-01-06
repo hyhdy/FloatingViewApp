@@ -1,15 +1,20 @@
-package com.hyh.floatingviewapp.floating;
+package com.hyh.floatingviewapp.floating.common;
 
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+
+import com.hyh.floatingviewapp.helper.FloatPermission;
 
 import static android.content.Context.WINDOW_SERVICE;
 
@@ -23,7 +28,45 @@ public class FloatingWindowManager {
     private WindowManager.LayoutParams mLayoutParams;
     private FloatingContainer mFloatingContainer;
     private int mWidgetW,mWidgetH;
+    private int mOffsetX,mOffsetY;
     private Context mContext;
+    private CallBack mCallBack;
+    private Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
+
+    private class AnimMoveRunnable implements Runnable {
+        private long mStartTime;
+        private long mDuration = 200;
+        private int mOffsetX;
+        private int mOffsetY;
+        private int mStartX;
+        private int mStartY;
+
+        public AnimMoveRunnable(int offsetX,int offsetY) {
+            mStartTime = System.currentTimeMillis();
+            mOffsetX = offsetX;
+            mOffsetY = offsetY;
+            mStartX = mLayoutParams.x;
+            mStartY = mLayoutParams.y;
+        }
+
+        @Override
+        public void run() {
+            float t = intercept();
+            mLayoutParams.x = (int) (mStartX + t * mOffsetX);
+            mLayoutParams.y = (int) (mStartY + t * mOffsetY);
+            mWindowManager.updateViewLayout(mFloatingContainer, mLayoutParams);
+            if(t < 1f){
+                mFloatingContainer.post(this);
+            }
+        }
+
+        private float intercept(){
+            float t = 1f * (System.currentTimeMillis() - mStartTime) / mDuration;
+            t = Math.min(1f,t);
+            t = mInterpolator.getInterpolation(t);
+            return t;
+        }
+    }
 
     public FloatingWindowManager(Context context) {
         mContext = context;
@@ -41,8 +84,8 @@ public class FloatingWindowManager {
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        mLayoutParams.x = 200;
-        mLayoutParams.y = 200;
+        mLayoutParams.x = 100;
+        mLayoutParams.y = 100;
     }
 
     /**
@@ -70,19 +113,39 @@ public class FloatingWindowManager {
 
                     @Override
                     public void onSizeChanged(int widgetW, int widgetH) {
-                        //悬浮窗尺寸改变需要更新悬浮窗位置
+                        if(mWidgetW==widgetW&&mWidgetH==widgetH){
+                            //悬浮窗尺寸没变化不更新位置
+                            return;
+                        }
+                        Log.d("hyh","FloatingWindowManager: onSizeChanged: widthtW="+widgetW+" ,widgetH="+widgetH);
                         mWidgetW = widgetW;
                         mWidgetH = widgetH;
-                        if(mLayoutParams.x > mWindowSize.x-widgetW){
-                            //处理边界问题
-                            mLayoutParams.x = mWindowSize.x - widgetW;
+                        //悬浮窗尺寸改变需要更新悬浮窗位置
+                        if(mLayoutParams.x > mWindowSize.x-widgetW || mLayoutParams.y > mWindowSize.y-widgetH) {
+                            if (mLayoutParams.x > mWindowSize.x - widgetW) {
+                                int newX = mWindowSize.x - widgetW;
+                                //记下位置偏移量，用于恢复位置
+                                mOffsetX = mLayoutParams.x - newX;
+                                Log.d("hyh", "FloatingWindowManager: onSizeChanged: mOffsetX=" + mOffsetX);
+                                //处理边界问题
+                                mLayoutParams.x = newX;
+                            }
+                            if (mLayoutParams.y > mWindowSize.y - widgetH) {
+                                int newY = mWindowSize.y - widgetH;
+                                //记下位置偏移量，用于恢复位置
+                                mOffsetY = mLayoutParams.y - newY;
+                                Log.d("hyh", "FloatingWindowManager: onSizeChanged: mOffsetY=" + mOffsetY);
+                                //处理边界问题
+                                mLayoutParams.y = newY;
+                            }
                             mWindowManager.updateViewLayout(mFloatingContainer, mLayoutParams);
-                        }
-
-                        if(mLayoutParams.y > mWindowSize.y-widgetH){
-                            //处理边界问题
-                            mLayoutParams.y = mWindowSize.y - widgetH;
-                            mWindowManager.updateViewLayout(mFloatingContainer, mLayoutParams);
+                        }else if(mOffsetX!=0||mOffsetY!=0){
+                            if(mCallBack!=null&&mCallBack.revocerenable()){
+                                //恢复悬浮窗位置，这里做了个动画移动，不然会有明显的闪烁，体验不好
+                                mFloatingContainer.post(new AnimMoveRunnable(mOffsetX,mOffsetY));
+                                mOffsetX = 0;
+                                mOffsetY = 0;
+                            }
                         }
                     }
                 });
@@ -132,5 +195,13 @@ public class FloatingWindowManager {
             mLayoutParams.y = mWindowSize.y - mWidgetH;
             mWindowManager.updateViewLayout(mFloatingContainer, mLayoutParams);
         }
+    }
+
+    public void setCallBack(CallBack callBack) {
+        mCallBack = callBack;
+    }
+
+    public interface CallBack{
+        boolean revocerenable();
     }
 }

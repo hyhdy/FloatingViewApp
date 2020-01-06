@@ -1,4 +1,4 @@
-package com.hyh.floatingviewapp;
+package com.hyh.floatingviewapp.helper;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.hyh.floatingviewapp.floating.FloatPermission;
+import com.hyh.floatingviewapp.helper.FloatPermission;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
@@ -159,7 +159,7 @@ public class PermissionManager {
     }
 
     @TargetApi(LOLLIPOP)
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_FLOATING_PERMISSIONS) {
             if (FloatPermission.checkPermissionAbove6(mHost)) {
                 if(checkRecordPermission()){

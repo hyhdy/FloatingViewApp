@@ -16,9 +16,11 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.hyh.floatingviewapp.R;
-import com.hyh.floatingviewapp.SecondActivity;
+import com.hyh.floatingviewapp.MainActivity;
+import com.hyh.floatingviewapp.floating.common.FloatingWindowManager;
+import com.hyh.floatingviewapp.floating.view.FloatingView;
 
-public class FloatingService extends Service {
+public class FloatingService extends Service implements FloatingWindowManager.CallBack {
     public static final int FLAG_FOREGROUND = 1;
     public static final String CHANNEL_ID ="com.hyh.floatingviewapp.hyh";
 
@@ -26,6 +28,11 @@ public class FloatingService extends Service {
     private FloatingView mFloatingView;
 
     private IBinder mBinder;
+
+    @Override
+    public boolean revocerenable() {
+        return !mFloatingView.isShowMsg();
+    }
 
     public class MyBinder extends Binder{
         public FloatingService getService(){
@@ -39,6 +46,7 @@ public class FloatingService extends Service {
         super.onCreate();
         mBinder = new MyBinder();
         mFloatingWindowManager = new FloatingWindowManager(this);
+        mFloatingWindowManager.setCallBack(this);
         setForeground();
     }
 
@@ -69,7 +77,7 @@ public class FloatingService extends Service {
         String content = "内容";
         int icon = R.drawable.ic_launcher_background;
 
-        Intent intent = new Intent(this, SecondActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
         builder.setSmallIcon(icon)//设置通知图标

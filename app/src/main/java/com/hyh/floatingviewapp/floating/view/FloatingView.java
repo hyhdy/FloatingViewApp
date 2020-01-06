@@ -1,4 +1,4 @@
-package com.hyh.floatingviewapp.floating;
+package com.hyh.floatingviewapp.floating.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -128,5 +128,9 @@ public class FloatingView extends RelativeLayout {
             }
 
         }
+    }
+
+    public boolean isShowMsg() {
+        return mShowMsg;
     }
 }

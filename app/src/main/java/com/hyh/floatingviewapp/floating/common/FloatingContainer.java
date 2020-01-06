@@ -1,24 +1,13 @@
-package com.hyh.floatingviewapp.floating;
+package com.hyh.floatingviewapp.floating.common;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * created by curdyhuang on 2019-11-11
@@ -26,13 +15,13 @@ import java.util.List;
  */
 public class FloatingContainer extends FrameLayout {
     private int mTouchSlop;
-    private int mInitMotionX, mInitMotionY, mLastMotionX, mLastMotionY;
+    private int mInitMotionX,mInitMotionY,mLastMotionX,mLastMotionY;
     private OnFloatingListener mOnFloatingListener;
     private int mWidgetW;
     private int mWidgetH;
 
     public FloatingContainer(@NonNull Context context) {
-        this(context, null);
+        this(context,null);
     }
 
     public FloatingContainer(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -43,11 +32,11 @@ public class FloatingContainer extends FrameLayout {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (oldw != w || oldh != h) {
+        if(oldw!=w||oldh!=h){
             mWidgetW = w;
             mWidgetH = h;
-            if (mOnFloatingListener != null) {
-                mOnFloatingListener.onSizeChanged(w, h);
+            if(mOnFloatingListener !=null){
+                mOnFloatingListener.onSizeChanged(w,h);
             }
         }
     }
@@ -61,28 +50,28 @@ public class FloatingContainer extends FrameLayout {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mInitMotionX = mLastMotionX = (int) ev.getRawX();
-                mInitMotionY = mLastMotionY = (int) ev.getRawY();
+                mInitMotionY = mLastMotionY =  (int) ev.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 int absDx = Math.abs(x - mInitMotionX);
                 int absDy = Math.abs(y - mInitMotionY);
-                if (absDx > mTouchSlop / 4 || absDy > mTouchSlop / 4) {
+                if (absDx > mTouchSlop/4 || absDy > mTouchSlop/4) {
                     //拦截滑动事件
                     intercept = true;
                 }
                 break;
             default:
         }
-        return intercept || super.onInterceptTouchEvent(ev);
+        return intercept||super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
+            case MotionEvent.ACTION_DOWN:{
 
             }
-            break;
+                break;
             case MotionEvent.ACTION_MOVE: {
                 int nowX = (int) event.getRawX();
                 int nowY = (int) event.getRawY();
@@ -94,11 +83,11 @@ public class FloatingContainer extends FrameLayout {
                     mOnFloatingListener.onMove(movedX, movedY, mWidgetW, mWidgetH);
                 }
             }
-            break;
-            case MotionEvent.ACTION_UP: {
+                break;
+            case MotionEvent.ACTION_UP:{
 
             }
-            break;
+                break;
             default:
                 break;
         }
@@ -112,9 +101,8 @@ public class FloatingContainer extends FrameLayout {
     public interface OnFloatingListener {
         /**
          * 移动悬浮窗
-         *
-         * @param movedX  x轴移动的像素
-         * @param movedY  y轴移动的像素
+         * @param movedX x轴移动的像素
+         * @param movedY y轴移动的像素
          * @param widgetW 悬浮窗宽度
          * @param widgetH 悬浮窗高度
          */
@@ -122,7 +110,6 @@ public class FloatingContainer extends FrameLayout {
 
         /**
          * 悬浮窗尺寸更新
-         *
          * @param widgetW 悬浮窗宽度
          * @param widgetH 悬浮窗高度
          */
