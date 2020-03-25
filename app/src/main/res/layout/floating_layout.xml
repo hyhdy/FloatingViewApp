@@ -12,7 +12,7 @@
         />
 
 
-    <com.hyh.floatingviewapp.floating.view.CustomRecyclerView
+    <com.hyh.floatingviewapp.view.CustomRecyclerView
         android:layout_marginTop="20dp"
         android:id="@+id/rv_list"
         android:layout_width="80dp"

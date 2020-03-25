@@ -1,4 +1,4 @@
-package com.hyh.floatingviewapp.helper;
+package com.hyh.floating.helper;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -12,8 +12,6 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
-import com.hyh.floatingviewapp.helper.FloatPermission;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;

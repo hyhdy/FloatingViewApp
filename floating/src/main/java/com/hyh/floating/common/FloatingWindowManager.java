@@ -1,4 +1,4 @@
-package com.hyh.floatingviewapp.floating.common;
+package com.hyh.floating.common;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -14,7 +14,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 
-import com.hyh.floatingviewapp.helper.FloatPermission;
+import com.hyh.floating.helper.FloatPermission;
 
 import static android.content.Context.WINDOW_SERVICE;
 

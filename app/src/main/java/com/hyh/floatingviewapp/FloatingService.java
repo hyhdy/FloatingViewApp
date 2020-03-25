@@ -1,4 +1,4 @@
-package com.hyh.floatingviewapp.floating;
+package com.hyh.floatingviewapp;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,10 +15,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.hyh.floatingviewapp.R;
-import com.hyh.floatingviewapp.MainActivity;
-import com.hyh.floatingviewapp.floating.common.FloatingWindowManager;
-import com.hyh.floatingviewapp.floating.view.FloatingView;
+import com.hyh.floating.common.FloatingWindowManager;
+import com.hyh.floatingviewapp.view.FloatingView;
 
 public class FloatingService extends Service implements FloatingWindowManager.CallBack {
     public static final int FLAG_FOREGROUND = 1;
@@ -75,7 +73,7 @@ public class FloatingService extends Service implements FloatingWindowManager.Ca
     private Notification createNotification(String channelId){
         String title = "标题";
         String content = "内容";
-        int icon = R.drawable.ic_launcher_background;
+        int icon = com.hyh.floating.R.drawable.ic_launcher_background;
 
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);

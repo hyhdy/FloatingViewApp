@@ -1,11 +1,10 @@
-package com.hyh.floatingviewapp.helper;
+package com.hyh.floating.helper;
 
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 
 import java.lang.reflect.Method;
 

@@ -10,8 +10,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 
-import com.hyh.floatingviewapp.floating.FloatingService;
-import com.hyh.floatingviewapp.helper.PermissionManager;
+import com.hyh.floating.helper.PermissionManager;
 
 public class MainActivity extends AppCompatActivity implements PermissionManager.PermissinCallBack {
     private PermissionManager mPermissionManager;

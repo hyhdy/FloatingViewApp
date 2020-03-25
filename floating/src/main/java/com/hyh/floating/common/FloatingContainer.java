@@ -1,4 +1,4 @@
-package com.hyh.floatingviewapp.floating.common;
+package com.hyh.floating.common;
 
 import android.content.Context;
 import android.util.AttributeSet;

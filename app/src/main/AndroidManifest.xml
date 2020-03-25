@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".floating.FloatingService" />
+        <service android:name=".FloatingService" />
     </application>
 
 </manifest>
