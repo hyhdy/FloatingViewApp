@@ -39,13 +39,6 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(mPermissionManager!=null){
-            mPermissionManager.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(mPermissionManager!=null){
             mPermissionManager.onActivityResult(requestCode,resultCode,data);

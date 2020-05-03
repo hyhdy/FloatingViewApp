@@ -151,7 +151,7 @@ public class FloatingWindowManager {
                 });
                 mWindowManager.addView(mFloatingContainer, mLayoutParams);
             }
-            mFloatingContainer.addView(view,new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mFloatingContainer.addView(view,new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
